@@ -3,3 +3,19 @@
   justify-content: center;
   gap: 50px;
 }
+
+.error {
+  border: red 1px solid;
+}
+
+.error-message {
+  color: red;
+}
+
+.active-filter {
+  background-color: lightgreen;
+}
+
+.is-done {
+  opacity: 0.5;
+}
