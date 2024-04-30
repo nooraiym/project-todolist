@@ -19,7 +19,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 // types
 type ThemeMode = 'dark' | 'light'
 export type FilterValuesType = "all" | "active" | "completed"
-type TodolistType = {
+export type TodolistType = {
   id: string
   title: string
   filter: FilterValuesType
@@ -28,10 +28,10 @@ type TodolistType = {
 
 function App() {
   // data
+  let [themeMode, setThemeMode] = useState<ThemeMode>('light')
   let todolistID1 = v1()
   let todolistID2 = v1()
-  
-  let [themeMode, setThemeMode] = useState<ThemeMode>('light')
+
   let [todolists, setTodolists] = useState<TodolistType[]>([
     { id: todolistID1, title: 'What to learn', filter: 'all' },
     { id: todolistID2, title: 'What to buy', filter: 'all' },
