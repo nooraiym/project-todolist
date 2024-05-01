@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { v1 } from 'uuid';
 import './App.css';
-import { Todolist } from './components/Todolist';
+import { TaskType, Todolist } from './components/Todolist';
 import { AddItemForm } from './components/AddItemForm';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -24,6 +24,9 @@ export type TodolistType = {
   title: string
   filter: FilterValuesType
 }
+export type TasksStateType = {
+  [key: string]: Array<TaskType>
+}
 
 
 function App() {
@@ -36,7 +39,7 @@ function App() {
     { id: todolistID1, title: 'What to learn', filter: 'all' },
     { id: todolistID2, title: 'What to buy', filter: 'all' },
   ])
-  let [tasks, setTasks] = useState({
+  let [tasks, setTasks] = useState<TasksStateType>({
     [todolistID1]: [
       { id: v1(), title: 'HTML&CSS', isDone: true },
       { id: v1(), title: 'JS', isDone: true },
