@@ -2,6 +2,7 @@ import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import AddBoxIcon from '@mui/icons-material/AddBox'
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
+import Toolbar from '@mui/material/Toolbar';
 
     type AddItemFormPropsType ={
     addItem: (title: string) => void
@@ -17,7 +18,7 @@ import { ChangeEvent, KeyboardEvent, useState } from 'react';
 
     const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         setError(null);
-        if( newTaskTitle !== '' && e.ctrlKey && e.key === "Enter") {
+        if( newTaskTitle !== '' && e.key === "Enter") {
             props.addItem(newTaskTitle);
             setNewTaskTitle("");
         }
@@ -34,7 +35,7 @@ import { ChangeEvent, KeyboardEvent, useState } from 'react';
 
 
     return (
-        <div>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between'}}>
             <TextField 
                 label="Enter a title"
                 variant={'outlined'}
@@ -49,6 +50,6 @@ import { ChangeEvent, KeyboardEvent, useState } from 'react';
                 onClick={addTaskHandler}>
                     <AddBoxIcon />
             </IconButton>
-        </div>
+        </Toolbar>
     )
     }
