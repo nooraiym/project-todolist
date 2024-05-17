@@ -40,8 +40,8 @@ export let todolistID1 = v1();
 export let todolistID2 = v1();
 
 let initialState: TodolistType[] = [
-    { id: todolistID1, title: 'What to learn', filter: 'all' },
-    { id: todolistID2, title: 'What to buy', filter: 'all' },
+    // { id: todolistID1, title: 'What to learn', filter: 'all' },
+    // { id: todolistID2, title: 'What to buy', filter: 'all' },
 ]
 
 //reducer:

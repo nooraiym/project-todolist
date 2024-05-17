@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import './App.css';
-import { TaskType, Todolist } from './components/Todolist';
+import { TaskType, Todolist } from './components/todolist/Todolist';
 import { AddItemForm } from './components/AddItemForm';
+import { MenuButton } from './components/MenuButton';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { MenuButton } from './components/MenuButton';
 import AppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
@@ -19,6 +19,7 @@ import { addTodolistAC} from './state/todolist-reducer';
 import { useDispatch } from 'react-redux';
 import { AppRootStateType } from './state/store';
 import { useSelector } from 'react-redux';
+import React from 'react';
 
 
 // types
@@ -36,7 +37,7 @@ export type TasksStateType = {
 
 function AppWithRedux() {
   // theme
-  let [themeMode, setThemeMode] = useState<ThemeMode>('light')  
+  let [themeMode, setThemeMode] = useState<ThemeMode>('light')
   const theme = createTheme({
   palette: {
     mode: themeMode === 'light' ? 'light' : 'dark',
@@ -58,13 +59,13 @@ function AppWithRedux() {
   const todolists = useSelector<AppRootStateType, Array<TodolistType>>(state => state.todolists);
 
   // functions
-  const changeModeHandler = () => {
+  const changeModeHandler = useCallback(() => {
     setThemeMode( themeMode === 'light' ? 'dark' : 'light')
-  }
-  const addTodolist = (title: string) => {
+  }, [])
+  const addTodolist = useCallback((title: string) => {
     const action = addTodolistAC(title);
     dispatch(action);
-    }
+  }, [])
 
 // ui
   return (
@@ -108,4 +109,4 @@ function AppWithRedux() {
   );
 }
 
-export default AppWithRedux;
+export default React.memo(AppWithRedux);

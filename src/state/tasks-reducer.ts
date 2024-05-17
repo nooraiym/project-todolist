@@ -1,6 +1,6 @@
 import { v1 } from "uuid"
-import { TaskType } from "../components/Todolist"
-import { AddTodolistActionType, RemoveTodolistActionType, todolistID1, todolistID2 } from "./todolist-reducer"
+import { TaskType } from "../components/todolist/Todolist"
+import { AddTodolistActionType, RemoveTodolistActionType} from "./todolist-reducer"
 import { TasksStateType } from "../AppWithRedux"
 
 //types:
@@ -19,15 +19,15 @@ type ActionType =
 
 //data:
 const initialState: TasksStateType = {
-    [todolistID1]: [
-        { id: v1(), title: 'HTML&CSS', isDone: true },
-        { id: v1(), title: 'JS', isDone: true },
-        { id: v1(), title: 'ReactJS', isDone: false },
-    ],
-    [todolistID2]: [
-        { id: v1(), title: 'Rest API', isDone: true },
-        { id: v1(), title: 'GraphQL', isDone: false },
-    ],
+    // [todolistID1]: [
+    //     { id: v1(), title: 'HTML&CSS', isDone: true },
+    //     { id: v1(), title: 'JS', isDone: true },
+    //     { id: v1(), title: 'ReactJS', isDone: false },
+    // ],
+    // [todolistID2]: [
+    //     { id: v1(), title: 'Rest API', isDone: true },
+    //     { id: v1(), title: 'GraphQL', isDone: false },
+    // ],
 };
 
 //reducer:
