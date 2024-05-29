@@ -2,7 +2,6 @@
   "name": "project-todolist",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/nooraiym/project-todolist",
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
@@ -17,7 +16,6 @@
     "@types/react-dom": "^18.0.0",
     "@types/react-redux": "^7.1.33",
     "@types/uuid": "^9.0.8",
-    "gh-pages": "^6.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.1.2",
@@ -28,8 +26,6 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "predeploy": "yarn run build",
-    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

@@ -28,7 +28,6 @@ tasks: {
     }
 };
 
-// @ts-ignore
 export const storyBookStore = legacy_createStore(rootReducer, initialGlobalState);
 
 export const ReduxStoreProviderDecorator = (storyFn: () => React.ReactNode) => {
