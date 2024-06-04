@@ -1,7 +1,6 @@
 import { ChangeEvent, useCallback } from "react";
 import React from "react";
 
-import { TaskType } from "./todolist/Todolist";
 import { EditableSpan } from "./EditableSpan";
 
 import { getListItemSx } from "./todolist/Todolist.styles";
@@ -12,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { changeTaskStatusAC, changeTaskTitleAC, removeTaskAC } from "../state/tasks-reducer";
 import { useDispatch } from "react-redux";
+import { TaskStatuses, TaskType } from "../api/todolists-api";
 
 type TaskPropsType = {
     todolistID: string
@@ -24,7 +24,7 @@ export const Task = React.memo(({todolistID, task}: TaskPropsType) => {
         dispatch(removeTaskAC(task.id, todolistID))
     }, [task.id, todolistID])
     const changeStatusHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        let newStatus = e.currentTarget.checked;
+        let newStatus = e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New;
         dispatch(changeTaskStatusAC(task.id, newStatus, todolistID))
     }, [task.id, todolistID])
     const changeTaskTitleHandler = useCallback(( title: string ) => {
@@ -34,12 +34,12 @@ export const Task = React.memo(({todolistID, task}: TaskPropsType) => {
     return (
     <ListItem 
     key={task.id} 
-    sx={getListItemSx(task.isDone)}
+    sx={getListItemSx(task.status === TaskStatuses.Completed)}
     >
         <div>
             <Checkbox 
             onChange={changeStatusHandler} 
-            checked={task.isDone} />
+            checked={task.status === TaskStatuses.Completed} />
             <EditableSpan 
             value={task.title} 
             onChange={changeTaskTitleHandler}/>

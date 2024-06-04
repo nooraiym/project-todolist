@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import './App.css';
-import { TaskType, Todolist } from './components/todolist/Todolist';
+import { Todolist } from './components/todolist/Todolist';
 import { AddItemForm } from './components/AddItemForm';
 import { MenuButton } from './components/MenuButton';
 
@@ -15,27 +15,24 @@ import Paper from '@mui/material/Paper';
 import Switch from '@mui/material/Switch';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import { addTodolistAC} from './state/todolist-reducer';
+import { addTodolistAC, TodolistDomainType} from './state/todolist-reducer';
 import { useDispatch } from 'react-redux';
 import { AppRootStateType } from './state/store';
 import { useSelector } from 'react-redux';
 import React from 'react';
+import { TaskType, TodolistType } from './api/todolists-api';
 
 
 // types
 type ThemeMode = 'dark' | 'light'
 export type FilterValuesType = "all" | "active" | "completed"
-export type TodolistType = {
-  id: string
-  title: string
-  filter: FilterValuesType
-}
+
 export type TasksStateType = {
   [key: string]: Array<TaskType>
 }
 
 
-function AppWithRedux() {
+function App() {
   // theme
   let [themeMode, setThemeMode] = useState<ThemeMode>('light')
   const theme = createTheme({
@@ -56,7 +53,7 @@ function AppWithRedux() {
 
   // data
   const dispatch = useDispatch();
-  const todolists = useSelector<AppRootStateType, Array<TodolistType>>(state => state.todolists);
+  const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists);
 
   // functions
   const changeModeHandler = useCallback(() => {
@@ -109,4 +106,4 @@ function AppWithRedux() {
   );
 }
 
-export default React.memo(AppWithRedux);
+export default React.memo(App);

@@ -1,11 +1,11 @@
-import { TasksStateType, TodolistType } from "../AppWithRedux"
+import { TasksStateType } from "../App"
 import { tasksReducer } from "./tasks-reducer"
-import { addTodolistAC, todolistReducer } from "./todolist-reducer"
+import { TodolistDomainType, addTodolistAC, todolistReducer } from "./todolist-reducer"
 
 
-test('ids should be equals', () => {
+test('ids should be equal', () => {
     const startTasksState: TasksStateType = {}
-    const startTodolistsState: Array<TodolistType> = []
+    const startTodolistsState: Array<TodolistDomainType> = []
 
     const action = addTodolistAC('new todolist')
 
