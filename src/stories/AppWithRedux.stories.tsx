@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import AppWithRedux from '../App';
-import { ReduxStoreProviderDecorator } from '../state/decorators/ReduxStoreProviderDecorator';
+import { ReduxStoreProviderDecorator } from '../middleware/decorators/ReduxStoreProviderDecorator';
 
 const meta: Meta<typeof AppWithRedux> = {
     title: 'Todolists/AppWithRedux',

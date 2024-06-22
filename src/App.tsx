@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './App.css';
 import { Todolist } from './components/todolist/Todolist';
 import { AddItemForm } from './components/AddItemForm';
@@ -15,12 +15,11 @@ import Paper from '@mui/material/Paper';
 import Switch from '@mui/material/Switch';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import { addTodolistAC, TodolistDomainType} from './state/todolist-reducer';
-import { useDispatch } from 'react-redux';
-import { AppRootStateType } from './state/store';
-import { useSelector } from 'react-redux';
+import { addTodolistTC, fetchTodolistsTC, TodolistDomainType} from './middleware/todolist-reducer';
+import { AppRootStateType } from './middleware/store';
 import React from 'react';
-import { TaskType, TodolistType } from './api/todolists-api';
+import { TaskType } from './api/todolists-api';
+import { useAppDispatch, useAppSelector } from './hooks/hooks';
 
 
 // types
@@ -52,16 +51,19 @@ function App() {
 })
 
   // data
-  const dispatch = useDispatch();
-  const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists);
+  const dispatch = useAppDispatch();
+  const todolists = useAppSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists);
+
+  useEffect(() => {
+    dispatch(fetchTodolistsTC())
+  }, [])
 
   // functions
   const changeModeHandler = useCallback(() => {
     setThemeMode( themeMode === 'light' ? 'dark' : 'light')
   }, [])
   const addTodolist = useCallback((title: string) => {
-    const action = addTodolistAC(title);
-    dispatch(action);
+    dispatch(addTodolistTC(title));
   }, [])
 
 // ui

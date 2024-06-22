@@ -1,5 +1,5 @@
 import { v1 } from "uuid"
-import { TodolistDomainType, addTodolistAC, changeTodolistFilterAC, changeTodolistTitleAC, removeTodolistAC, todolistReducer } from "./todolist-reducer"
+import { TodolistDomainType, addTodolistAC, changeTodolistFilterAC, changeTodolistTitleAC, removeTodolistAC, setTodolistAC, todolistReducer } from "./todolist-reducer"
 
 let todolistID1: string
 let todolistID2: string
@@ -47,4 +47,11 @@ test('correct filter of todolist should be changed', ()=> {
 //expect:
     expect(endState[0].filter).toBe('all');
     expect(endState[1].filter).toBe('completed');
+})
+test('todolists should be set to the state', ()=> {
+//action:
+    const endState = todolistReducer([], setTodolistAC(startState))
+
+//expect:
+    expect(endState.length).toBe(2);
 })
