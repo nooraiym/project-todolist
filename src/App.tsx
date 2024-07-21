@@ -1,23 +1,18 @@
+import React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import './App.css';
 import { Todolist } from './components/todolist/Todolist';
 import { AddItemForm } from './components/AddItemForm';
-import { MenuButton } from './components/MenuButton';
+import Header from './components/Header';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar';
-import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Switch from '@mui/material/Switch';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { addTodolistTC, fetchTodolistsTC, TodolistDomainType} from './middleware/todolist-reducer';
 import { AppRootStateType } from './middleware/store';
-import React from 'react';
 import { TaskType } from './api/todolists-api';
 import { useAppDispatch, useAppSelector } from './hooks/hooks';
 
@@ -55,23 +50,24 @@ function App() {
   const changeModeHandler = useCallback(() => setThemeMode( themeMode === 'light' ? 'dark' : 'light'), [])
   const addTodolist = useCallback((title: string) => dispatch(addTodolistTC(title)), [])
 
+  const mappedTodolists = todolists.map(el => {
+    return (
+      <Grid key={el.id}>
+        <Paper elevation={6} sx={{ display: 'flex', flexDirection: 'column', p: '20px' }}>
+          <Todolist
+            todolistID={el.id}
+            title={el.title} 
+            filter={el.filter}
+          />
+        </Paper>
+      </Grid>
+    )});
+
 // ui
   return (
     <ThemeProvider theme={theme} >
       <CssBaseline />
-      <AppBar position="static" sx={{ mb: '30px' }}>
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <IconButton color="inherit">
-            <MenuIcon />
-          </IconButton>
-          <div>
-            <MenuButton background={theme.palette.primary.dark} >Login</MenuButton>
-            <MenuButton background={theme.palette.primary.dark} >Logout</MenuButton>
-            <MenuButton background='#3f89de' >Faq</MenuButton>
-            <Switch color={'default'} onChange={changeModeHandler} />
-          </div>
-        </Toolbar>
-      </AppBar>
+      <Header theme={theme} changeModeHandler={changeModeHandler} />
 
       <Container fixed sx={{ padding: '0' }}>
         <Grid container sx={{ mb: '50px' }}>
@@ -79,18 +75,7 @@ function App() {
         </Grid>
 
         <Grid container spacing={4} sx={{ gap: '20px', flexWrap: 'wrap' }}>
-          {todolists.map(el => {
-            return (
-              <Grid key={el.id}>
-                <Paper elevation={6} sx={{ display: 'flex', flexDirection: 'column', p: '20px' }}>
-                  <Todolist
-                    todolistID={el.id}
-                    title={el.title} 
-                    filter={el.filter}
-                  />
-                </Paper>
-              </Grid>
-            )})}
+          { mappedTodolists }
         </Grid>
       </Container>
     </ThemeProvider>
