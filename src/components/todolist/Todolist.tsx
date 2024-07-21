@@ -53,10 +53,10 @@ export const Todolist = React.memo(({ todolistID, title, filter}: TodolistPropsT
   const onCompletedClickHandler = useCallback(() => functionForButton(todolistID, "completed"), [todolistID]);
 
   let filteredTasks = tasks;
-  if ( filter === "completed") {
+  if (filter === "completed") {
     filteredTasks = filteredTasks.filter(t => t.status === TaskStatuses.Completed)
   }
-  if ( filter === "active") {
+  if (filter === "active") {
     filteredTasks = filteredTasks.filter(t => t.status === TaskStatuses.New)
   }
 

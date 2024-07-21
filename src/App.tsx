@@ -21,17 +21,18 @@ import React from 'react';
 import { TaskType } from './api/todolists-api';
 import { useAppDispatch, useAppSelector } from './hooks/hooks';
 
-
 // types
 type ThemeMode = 'dark' | 'light'
 export type FilterValuesType = "all" | "active" | "completed"
-
-export type TasksStateType = {
-  [key: string]: Array<TaskType>
-}
+export type TasksStateType = { [key: string]: Array<TaskType> }
 
 
 function App() {
+  // data
+  const dispatch = useAppDispatch();
+  const todolists = useAppSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists);
+  useEffect(() => dispatch(fetchTodolistsTC()), [])
+
   // theme
   let [themeMode, setThemeMode] = useState<ThemeMode>('light')
   const theme = createTheme({
@@ -50,21 +51,9 @@ function App() {
   },
 })
 
-  // data
-  const dispatch = useAppDispatch();
-  const todolists = useAppSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists);
-
-  useEffect(() => {
-    dispatch(fetchTodolistsTC())
-  }, [])
-
   // functions
-  const changeModeHandler = useCallback(() => {
-    setThemeMode( themeMode === 'light' ? 'dark' : 'light')
-  }, [])
-  const addTodolist = useCallback((title: string) => {
-    dispatch(addTodolistTC(title));
-  }, [])
+  const changeModeHandler = useCallback(() => setThemeMode( themeMode === 'light' ? 'dark' : 'light'), [])
+  const addTodolist = useCallback((title: string) => dispatch(addTodolistTC(title)), [])
 
 // ui
   return (
