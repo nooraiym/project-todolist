@@ -2,6 +2,7 @@ import { AddTodolistActionType, RemoveTodolistActionType, SetTodolistActionType}
 import { TasksStateType } from "../App"
 import { TaskStatuses, TaskType, todolistsAPI } from "../api/todolists-api"
 import { AppDispatch, AppRootStateType, AppThunk } from "./store"
+import { setAppErrorAC, setAppStatusAC } from "./app-reducer"
 
 //types:
 type RemoveTasksActionType = ReturnType<typeof removeTaskAC>
@@ -88,24 +89,38 @@ export const setTaskAC = (todoID: string, tasks: Array<TaskType>) =>
 // thunk
 export const fetchTasksTC = (todoID: string): AppThunk => async (dispatch: AppDispatch) => {
     try {
+        dispatch(setAppStatusAC('loading'))
         const res = await todolistsAPI.getTasks(todoID)
         dispatch(setTaskAC(todoID, res.data.items))
+        dispatch(setAppStatusAC('succeeded'))
     } catch(error) {
         console.log(error)
     }
 }
 export const removeTaskTC = (todoID: string, taskID: string): AppThunk => async (dispatch: AppDispatch) => {
     try {
+        dispatch(setAppStatusAC('loading'))
         await todolistsAPI.deleteTask(todoID, taskID)
         dispatch(removeTaskAC(todoID, taskID))
+        dispatch(setAppStatusAC('succeeded'))
     } catch(error) {
         console.log(error)
     }
 }
 export const addTaskTC = (todoID: string, title: string): AppThunk => async (dispatch: AppDispatch) => {
     try {
+        dispatch(setAppStatusAC('loading'))
         const res = await todolistsAPI.createTask(todoID, title)
-        dispatch(addTaskAC(res.data.data.item))
+        
+        if (res.data.resultCode === 0) {
+            dispatch(addTaskAC(res.data.data.item))
+            dispatch(setAppStatusAC('succeeded'))
+        } else {
+            res.data.messages.length 
+            ? dispatch(setAppErrorAC(res.data.messages[0]))
+            : dispatch(setAppErrorAC('Some error occured'))
+            dispatch(setAppStatusAC('failed'))
+        }
     } catch(error) {
         console.log(error)
     }

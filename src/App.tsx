@@ -15,6 +15,7 @@ import { addTodolistTC, fetchTodolistsTC, TodolistDomainType} from './middleware
 import { AppRootStateType } from './middleware/store';
 import { TaskType } from './api/todolists-api';
 import { useAppDispatch, useAppSelector } from './hooks/hooks';
+import { ErrorSnackbar } from './components/ErrorSnackbar';
 
 // types
 type ThemeMode = 'dark' | 'light'
@@ -66,6 +67,7 @@ function App() {
 // ui
   return (
     <ThemeProvider theme={theme} >
+      <ErrorSnackbar />
       <CssBaseline />
       <Header theme={theme} changeModeHandler={changeModeHandler} />
 

@@ -3,6 +3,7 @@ import { FilterValuesType } from "../App"
 import { TodolistType, todolistsAPI } from "../api/todolists-api"
 import { AppDispatch, AppRootStateType, AppThunk } from "./store"
 import { fetchTasksTC } from "./tasks-reducer"
+import { setAppStatusAC } from "./app-reducer"
 
 //types:
 export type TodolistDomainType = TodolistType & { filter: FilterValuesType }
@@ -53,17 +54,22 @@ export const setTodolistAC = (todolists: Array<TodolistType>) => ({type: 'SET-TO
 // thunk
 export const fetchTodolistsTC = (): AppThunk => async (dispatch: AppDispatch) => {
     try {
+        dispatch(setAppStatusAC('loading'))
         const res = await todolistsAPI.getTodolists()
         dispatch(setTodolistAC(res.data))
         res.data.map(el => dispatch(fetchTasksTC(el.id)))
+        dispatch(setAppStatusAC('succeeded'))
+
     } catch(error) {
         console.log(error)
     }
 }
 export const addTodolistTC = (title: string): AppThunk => async (dispatch: AppDispatch) => {
     try {
+        dispatch(setAppStatusAC('loading'))
         const res = await todolistsAPI.createTodolist(title)
         dispatch(addTodolistAC(res.data.data.item))
+        dispatch(setAppStatusAC('succeeded'))
     } catch(error) {
         console.log(error);
     }
