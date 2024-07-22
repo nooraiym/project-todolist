@@ -23,9 +23,7 @@ export const TodolistList = ({ demo = false } : TodolistListPropsType) => {
       <Grid key={el.id}>
         <Paper elevation={6} sx={{ display: 'flex', flexDirection: 'column', p: '20px' }}>
           <Todolist
-            todolistID={el.id}
-            title={el.title} 
-            filter={el.filter}
+            todolist={el}
             demo = {demo}
           />
         </Paper>

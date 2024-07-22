@@ -7,9 +7,10 @@ import React from 'react';
 
 type AddItemFormPropsType ={
     addItem: (title: string) => void
+    disabled?: boolean
 }
 
-export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
+export const AddItemForm = React.memo(( {addItem, disabled = false} : AddItemFormPropsType) => {
     const [newTaskTitle, setNewTaskTitle] = useState("");
     const [error, setError] = useState<string | null>(null);
 
@@ -22,14 +23,14 @@ export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
             setError(null);
         }
         if( newTaskTitle !== '' && e.key === "Enter") {
-            props.addItem(newTaskTitle);
+            addItem(newTaskTitle);
             setNewTaskTitle("");
         }
     }
 
     const addTaskHandler = () => {
         if (newTaskTitle.trim() !== "") {
-            props.addItem(newTaskTitle.trim());
+            addItem(newTaskTitle.trim());
             setNewTaskTitle ("")
         } else {
             setError("Title is required");
@@ -47,11 +48,14 @@ export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
                 helperText={error}
                 value={newTaskTitle} 
                 onChange={onNewTitleChangeHandler}
-                onKeyDown={onKeyDownHandler} 
+                onKeyDown={onKeyDownHandler}
+                disabled={disabled}
             />
             <IconButton 
                 color={'primary'}
-                onClick={addTaskHandler}>
+                onClick={addTaskHandler}
+                disabled={disabled}
+                >
                     <AddBoxIcon />
             </IconButton>
         </Toolbar>

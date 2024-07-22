@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import {action} from '@storybook/addon-actions'
-import { AddItemForm } from '../components/AddItemForm';
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import Toolbar from '@mui/material/Toolbar';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import AddBoxIcon from '@mui/icons-material/AddBox'
+import { AddItemForm } from '../components/AddItemForm';
 
 const meta: Meta<typeof AddItemForm> = {
     title: 'Todolists/AddItemForm',
@@ -18,6 +18,9 @@ const meta: Meta<typeof AddItemForm> = {
         addItem: {
             description: 'Button clicked inside form',
             action: 'clicked'
+        },
+        disabled: {
+            description: 'Form change availability'
         }
     },
 };
@@ -31,7 +34,12 @@ export const Primary: Story = {
 };
 
 export const Secondary = () => <AddItemForm addItem={action('Button clicked')} />
-
+export const Disabled: Story = {
+    args: { // props
+        addItem: action('Button'),
+        disabled: true
+    },
+};
 export const Warning: Story = {
     render: (args) => {
         const [newTaskTitle, setNewTaskTitle] = useState("");
