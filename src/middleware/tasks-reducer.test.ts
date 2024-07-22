@@ -1,7 +1,7 @@
 import { v1 } from 'uuid';
 import { TasksStateType } from '../App'
 import { TaskStatuses, TodoTaskPriorities } from '../api/todolists-api';
-import { addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, setTaskAC, tasksReducer } from './tasks-reducer'
+import { removeTaskAC, setTaskAC, tasksReducer, updateTaskAC } from './tasks-reducer'
 import { addTodolistAC, removeTodolistAC } from './todolist-reducer'
 
 let startState: TasksStateType = {};
@@ -37,14 +37,14 @@ test('correct task should be deleted from correct array', () => {
     })
 })
 test('status of specified task should be changed', () => {
-    const action = changeTaskStatusAC('todolistID2', '2', TaskStatuses.New)
+    const action = updateTaskAC('todolistID2', '2', { status: TaskStatuses.New})
     const endState = tasksReducer(startState, action)
 
     expect(endState['todolistID1'][1].status).toBe(TaskStatuses.Completed)
     expect(endState['todolistID2'][1].status).toBe(TaskStatuses.New)
 })
 test('title of specified task should be changed', () => {
-    const action = changeTaskTitleAC('todolistID2', '2', 'chips')
+    const action = updateTaskAC('todolistID2', '2', { title: 'chips' })
     const endState = tasksReducer(startState, action)
 
     expect(endState['todolistID1'][1].title).toBe('JS')

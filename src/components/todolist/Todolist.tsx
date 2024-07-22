@@ -79,7 +79,7 @@ export const Todolist = React.memo(({ todolist, demo = false }: TodolistPropsTyp
       <AddItemForm addItem={addTask} disabled={todolist.entityStatus === 'loading'} />
       
       <List>
-        {filteredTasks.map(t => { return <Task key={t.id} todolistID={todolist.id} task={t} /> })}
+        {filteredTasks.map(t => { return <Task key={t.id} todoID={todolist.id} task={t} /> })}
       </List>
       <Box
         sx={filterButtonsContainerSx}>

@@ -33,7 +33,7 @@ const TaskWrapper = () => {
     let task = useSelector<AppRootStateType, TaskType>(state => state.tasks['todolistId1'][0])
     if (!task) task = {id: 'fdf', title: 'There\'s no tasks', status: TaskStatuses.Completed, description: '', priority: TodoTaskPriorities.Low, startDate: '', deadline: '', todoListId: 'todolistId1', order: 0, addedDate: ''};
         return (
-            <Task todolistID={'todolistId1'} task={task} />
+            <Task todoID={'todolistId1'} task={task} />
         )
 }
 

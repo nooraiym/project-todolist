@@ -9,27 +9,28 @@ import IconButton from "@mui/material/IconButton";
 import Checkbox from "@mui/material/Checkbox";
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { changeTaskStatusTC, changeTaskTitleTC, removeTaskTC } from "../middleware/tasks-reducer";
+import { removeTaskTC, updateTaskTC } from "../middleware/tasks-reducer";
 import { TaskStatuses, TaskType } from "../api/todolists-api";
 import { useAppDispatch } from "../hooks/hooks";
 
 type TaskPropsType = {
-    todolistID: string
+    todoID: string
     task: TaskType
 };
 
-export const Task = React.memo(({todolistID, task}: TaskPropsType) => {
+export const Task = React.memo(({todoID, task}: TaskPropsType) => {
     const dispatch = useAppDispatch();
     const removeTaskHandler = useCallback(() => {
-        dispatch(removeTaskTC(todolistID, task.id))
-    }, [task.id, todolistID])
+        dispatch(removeTaskTC(todoID, task.id))
+    }, [task.id, todoID])
     const changeStatusHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        debugger
         let newStatus = e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New;
-        dispatch(changeTaskStatusTC(todolistID, task.id, newStatus))
-    }, [task.id, todolistID])
+        dispatch(updateTaskTC(todoID, task.id, { status: newStatus }))
+    }, [])
     const changeTaskTitleHandler = useCallback(( title: string ) => {
-        dispatch(changeTaskTitleTC(todolistID, task.id, title))
-    }, [task.id, todolistID])
+        dispatch(updateTaskTC(todoID, task.id, { title }))
+    }, [])
 
     return (
     <ListItem 
