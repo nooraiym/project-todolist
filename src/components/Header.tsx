@@ -1,4 +1,3 @@
-import React, { useCallback } from 'react';
 import { MenuButton } from './MenuButton';
 import AppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
@@ -13,7 +12,7 @@ type HeaderPropsType = {
   changeModeHandler: () => void
 }
 
-export const Header = ( {theme, changeModeHandler} : HeaderPropsType ) => {
+export const Header = ( { theme, changeModeHandler } : HeaderPropsType ) => {
   const status = useAppSelector(state => state.app.status)
   return (
     <AppBar position="static" sx={{ mb: '30px' }}>

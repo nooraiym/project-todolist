@@ -3,7 +3,7 @@ import { ReduxStoreProviderDecorator } from '../middleware/decorators/ReduxStore
 import App from '../App';
 
 const meta: Meta<typeof App> = {
-    title: 'Todolists/AppWithRedux',
+    title: 'Todolists/App',
     component: App,
     tags: ['autodocs'],
     parameters: {
@@ -15,4 +15,8 @@ export default meta;
 
 type Story = StoryObj<typeof meta>
 
-export const AppStory: Story = {}
+export const AppStory: Story = {
+    args: {
+        demo: true
+    },
+};

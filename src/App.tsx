@@ -1,33 +1,32 @@
 import React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import './App.css';
-import { Todolist } from './components/todolist/Todolist';
-import { AddItemForm } from './components/AddItemForm';
 import Header from './components/Header';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import { addTodolistTC, fetchTodolistsTC, TodolistDomainType} from './middleware/todolist-reducer';
-import { AppRootStateType } from './middleware/store';
+import { fetchTodolistsTC } from './middleware/todolist-reducer';
 import { TaskType } from './api/todolists-api';
-import { useAppDispatch, useAppSelector } from './hooks/hooks';
+import { useAppDispatch } from './hooks/hooks';
 import { ErrorSnackbar } from './components/ErrorSnackbar';
+import { TodolistList } from './components/todolist/TodolistList';
 
 // types
 type ThemeMode = 'dark' | 'light'
 export type FilterValuesType = "all" | "active" | "completed"
 export type TasksStateType = { [key: string]: Array<TaskType> }
+type AppPropsType = { demo?: boolean }
 
 
-function App() {
+function App( { demo = false }: AppPropsType) {
   // data
   const dispatch = useAppDispatch();
-  const todolists = useAppSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists);
-  useEffect(() => dispatch(fetchTodolistsTC()), [])
+  useEffect(() => {
+    if (demo) return
+    dispatch(fetchTodolistsTC())
+  }, [])
 
   // theme
   let [themeMode, setThemeMode] = useState<ThemeMode>('light')
@@ -49,20 +48,6 @@ function App() {
 
   // functions
   const changeModeHandler = useCallback(() => setThemeMode( themeMode === 'light' ? 'dark' : 'light'), [])
-  const addTodolist = useCallback((title: string) => dispatch(addTodolistTC(title)), [])
-
-  const mappedTodolists = todolists.map(el => {
-    return (
-      <Grid key={el.id}>
-        <Paper elevation={6} sx={{ display: 'flex', flexDirection: 'column', p: '20px' }}>
-          <Todolist
-            todolistID={el.id}
-            title={el.title} 
-            filter={el.filter}
-          />
-        </Paper>
-      </Grid>
-    )});
 
 // ui
   return (
@@ -72,13 +57,7 @@ function App() {
       <Header theme={theme} changeModeHandler={changeModeHandler} />
 
       <Container fixed sx={{ padding: '0' }}>
-        <Grid container sx={{ mb: '50px' }}>
-          <AddItemForm addItem={addTodolist} />
-        </Grid>
-
-        <Grid container spacing={4} sx={{ gap: '20px', flexWrap: 'wrap' }}>
-          { mappedTodolists }
-        </Grid>
+        <TodolistList demo={demo} />
       </Container>
     </ThemeProvider>
   );
