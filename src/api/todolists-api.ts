@@ -1,5 +1,7 @@
 import axios from 'axios'
 //types:
+export type FilterValuesType = "all" | "active" | "completed"
+export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'
 export type TodolistType = {
     id: string
     title: string
@@ -16,13 +18,17 @@ export type ResponseType<D = {}> = {
     fieldsErrors: FieldErrorType[]
     data: D
 }
+export type TodolistDomainType = TodolistType & {
+    filter: FilterValuesType
+    entityStatus: RequestStatusType
+}
 export enum TaskStatuses {
     New = 0,
     InProgress = 1,
     Completed = 2,
     Draft = 3 
 }
-export enum TodoTaskPriorities {
+export enum TaskPriorities {
     Low = 0,
     Middle = 1,
     Hi = 2,
@@ -33,7 +39,7 @@ export type TaskType = {
     description: string
     title: string
     status: TaskStatuses
-    priority: TodoTaskPriorities
+    priority: TaskPriorities
     startDate: string
     deadline: string
     id: string
@@ -41,7 +47,7 @@ export type TaskType = {
     order: number
     addedDate: string
 }
-type TaskResponseType = {
+export type TaskResponseType = {
     error: string | null
     totalCount: number
     items: TaskType[]
@@ -54,6 +60,11 @@ export type UpdateTaskType = {
     startDate: string
     deadline: string
 }
+
+export type DomainTaskType = TaskType & {
+    entityStatus: RequestStatusType
+}
+export type TasksStateType = { [key: string]: Array<DomainTaskType> }
 //instance:
 const instance = axios.create({
     baseURL: 'https://social-network.samuraijs.com/api/1.1/',

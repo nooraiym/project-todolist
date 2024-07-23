@@ -5,18 +5,21 @@ import { ChangeEvent, useState } from "react"
 type PropsType = {
     value: string
     onChange: (newTitle: string) => void
+    disabled?: boolean
 }
 
-export const EditableSpan = React.memo(({ value, onChange }: PropsType) => {
+export const EditableSpan = React.memo(({ value, onChange, disabled }: PropsType) => {
     const [editMode, setEditMode] = useState(false)
     const [title, setTitle] = useState(value)
     
     const activateEditModeHandler = () => {
-        setEditMode(!editMode)
+        if (!disabled) {
+            setEditMode(true)
+        }
     }
     const deactivateEditModeHandler = () => {
         setEditMode(false)
-        onChange(title)
+        onChange(title.trim())
     }
     const changeTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
         setTitle(event.currentTarget.value)
@@ -33,7 +36,7 @@ export const EditableSpan = React.memo(({ value, onChange }: PropsType) => {
             onBlur={deactivateEditModeHandler} 
             autoFocus  />
         ) : (
-        <span onDoubleClick={activateEditModeHandler}>{value}</span>
+        <span onDoubleClick={activateEditModeHandler} style={disabled ? {opacity: .5} : {}} >{value}</span>
         )}
     </>
     )

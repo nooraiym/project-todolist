@@ -1,6 +1,6 @@
 import { v1 } from "uuid"
-import { TodolistDomainType, addTodolistAC, changeTodolistEntityStatusAC, changeTodolistFilterAC, changeTodolistTitleAC, removeTodolistAC, setTodolistAC, todolistReducer } from "./todolist-reducer"
-import { RequestStatusType } from "./app-reducer"
+import { addTodolistAC, changeTodolistEntityStatusAC, changeTodolistFilterAC, changeTodolistTitleAC, removeTodolistAC, setTodolistAC, todolistReducer } from "./todolist-reducer"
+import { RequestStatusType, TodolistDomainType } from "../api/todolists-api"
 
 let todolistID1: string
 let todolistID2: string

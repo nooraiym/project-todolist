@@ -4,10 +4,11 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { Todolist } from './Todolist';
 
-import { TodolistDomainType, addTodolistTC} from '../../middleware/todolist-reducer';
+import { addTodolistTC} from '../../middleware/todolist-reducer';
 import { AppRootStateType } from '../../middleware/store';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { useCallback } from 'react';
+import { TodolistDomainType } from '../../api/todolists-api';
 
 type TodolistListPropsType = {
   demo?: boolean

@@ -8,17 +8,13 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { fetchTodolistsTC } from './middleware/todolist-reducer';
-import { TaskType } from './api/todolists-api';
 import { useAppDispatch } from './hooks/hooks';
 import { ErrorSnackbar } from './components/ErrorSnackbar';
 import { TodolistList } from './components/todolist/TodolistList';
 
 // types
 type ThemeMode = 'dark' | 'light'
-export type FilterValuesType = "all" | "active" | "completed"
-export type TasksStateType = { [key: string]: Array<TaskType> }
 type AppPropsType = { demo?: boolean }
-
 
 function App( { demo = false }: AppPropsType) {
   // data

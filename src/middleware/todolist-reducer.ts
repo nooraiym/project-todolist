@@ -1,15 +1,12 @@
 import { v1 } from "uuid"
-import { FilterValuesType } from "../App"
-import { TodolistType, todolistsAPI } from "../api/todolists-api"
+import { FilterValuesType, RequestStatusType, TodolistDomainType, TodolistType, todolistsAPI } from "../api/todolists-api"
 import { AppDispatch, AppRootStateType, AppThunk } from "./store"
 import { fetchTasksTC } from "./tasks-reducer"
-import { RequestStatusType, setAppStatusAC } from "./app-reducer"
+import { setAppStatusAC } from "./app-reducer"
+import { AxiosError } from "axios"
+import { handleServerError, handleServerNetworkError } from "../utils/error-utils"
 
 //types:
-export type TodolistDomainType = TodolistType & {
-    filter: FilterValuesType
-    entityStatus: RequestStatusType
-}
 export type SetTodolistActionType = ReturnType<typeof setTodolistAC>
 export type RemoveTodolistActionType = ReturnType<typeof removeTodolistAC>
 export type AddTodolistActionType = ReturnType<typeof addTodolistAC>
@@ -67,41 +64,68 @@ export const fetchTodolistsTC = (): AppThunk => async (dispatch: AppDispatch) =>
         dispatch(setTodolistAC(res.data))
         res.data.map(el => dispatch(fetchTasksTC(el.id)))
         dispatch(setAppStatusAC('succeeded'))
-
     } catch(error) {
-        console.log(error)
+        error instanceof AxiosError
+            ? handleServerNetworkError(error, dispatch)
+            : handleServerNetworkError({ message: 'Unknown error occurred' }, dispatch)
     }
 }
 export const addTodolistTC = (title: string): AppThunk => async (dispatch: AppDispatch) => {
     try {
         dispatch(setAppStatusAC('loading'))
         const res = await todolistsAPI.createTodolist(title)
-        dispatch(addTodolistAC(res.data.data.item))
-        dispatch(setAppStatusAC('succeeded'))
+        if (res.data.resultCode === 0) {
+            dispatch(addTodolistAC(res.data.data.item))
+            dispatch(setAppStatusAC('succeeded'))
+        } else {
+            handleServerError(res.data, dispatch)
+        }
     } catch(error) {
-        console.log(error);
+        error instanceof AxiosError
+            ? handleServerNetworkError(error, dispatch)
+            : handleServerNetworkError({ message: 'Unknown error occurred' }, dispatch)
     }
 }
 export const removeTodolistTC = (todoID: string): AppThunk => async (dispatch: AppDispatch) => {
     try {
         dispatch(setAppStatusAC('loading'))
         dispatch(changeTodolistEntityStatusAC(todoID, 'loading'))
-        await todolistsAPI.deleteTodolist(todoID)
-        dispatch(removeTodolistAC(todoID))
-        dispatch(setAppStatusAC('succeeded'))
+        const res = await todolistsAPI.deleteTodolist(todoID)
+        if (res.data.resultCode === 0) {
+            dispatch(removeTodolistAC(todoID))
+            dispatch(setAppStatusAC('succeeded'))
+        } else {
+            handleServerError(res.data, dispatch)
+        }
+        dispatch(changeTodolistEntityStatusAC(todoID, 'idle'))
     } catch(error) {
-        console.log(error);
+        error instanceof AxiosError
+            ? handleServerNetworkError(error, dispatch)
+            : handleServerNetworkError({ message: 'Unknown error occurred' }, dispatch)
+        dispatch(changeTodolistEntityStatusAC(todoID, 'failed'))
     }
 }
 export const changeTodolistTitleTC = (todoID: string, title: string): AppThunk => async (dispatch: AppDispatch, getState: () => AppRootStateType) => {
     try {
+        dispatch(changeTodolistEntityStatusAC(todoID, 'loading'))
+        dispatch(setAppStatusAC('loading'))
+
         const state = getState();
         const todolist = state.todolists.find(todo => todo.id === todoID);
         if(todolist) {
-            await todolistsAPI.updateTodolists(todoID, title)
-            dispatch(changeTodolistTitleAC(todoID, title))
+            const res = await todolistsAPI.updateTodolists(todoID, title)
+            if (res.data.resultCode === 0) {
+                dispatch(changeTodolistTitleAC(todoID, title))
+                dispatch(setAppStatusAC('succeeded'))
+                dispatch(changeTodolistEntityStatusAC(todoID, 'idle'))
+            } else {
+                handleServerError(res.data, dispatch)
+            }
         }
     } catch(error) {
-        console.log(error);
+        error instanceof AxiosError
+            ? handleServerNetworkError(error, dispatch)
+            : handleServerNetworkError({ message: 'Unknown error occurred' }, dispatch)
+        dispatch(changeTodolistEntityStatusAC(todoID, 'failed'))
     }
 }

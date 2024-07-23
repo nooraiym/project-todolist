@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 import { AddItemForm } from '../AddItemForm';
 import { EditableSpan } from '../EditableSpan';
 import { Task } from '../Task';
-import { FilterValuesType } from '../../App';
 
 import { filterButtonsContainerSx } from './Todolist.styles';
 import IconButton from '@mui/material/IconButton';
@@ -14,8 +13,8 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
 import { AppRootStateType } from '../../middleware/store';
-import { TodolistDomainType, changeTodolistFilterAC, changeTodolistTitleTC, removeTodolistTC } from '../../middleware/todolist-reducer';
-import { TaskStatuses, TaskType } from '../../api/todolists-api';
+import { changeTodolistFilterAC, changeTodolistTitleTC, removeTodolistTC } from '../../middleware/todolist-reducer';
+import { DomainTaskType, FilterValuesType, TaskStatuses, TodolistDomainType } from '../../api/todolists-api';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { addTaskTC, fetchTasksTC } from '../../middleware/tasks-reducer';
 
@@ -27,7 +26,7 @@ type TodolistPropsType = {
 
 export const Todolist = React.memo(({ todolist, demo = false }: TodolistPropsType) => {
   const dispatch = useAppDispatch();
-  const tasks = useAppSelector<AppRootStateType, Array<TaskType>>(state => state.tasks[todolist.id]);
+  const tasks = useAppSelector<AppRootStateType, Array<DomainTaskType>>(state => state.tasks[todolist.id]);
 
   useEffect(() => {
     if (demo) {

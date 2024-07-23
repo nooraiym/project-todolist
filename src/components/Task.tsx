@@ -10,12 +10,12 @@ import Checkbox from "@mui/material/Checkbox";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { removeTaskTC, updateTaskTC } from "../middleware/tasks-reducer";
-import { TaskStatuses, TaskType } from "../api/todolists-api";
+import { DomainTaskType, TaskStatuses } from "../api/todolists-api";
 import { useAppDispatch } from "../hooks/hooks";
 
 type TaskPropsType = {
     todoID: string
-    task: TaskType
+    task: DomainTaskType
 };
 
 export const Task = React.memo(({todoID, task}: TaskPropsType) => {
@@ -34,16 +34,20 @@ export const Task = React.memo(({todoID, task}: TaskPropsType) => {
 
     return (
     <ListItem 
-    key={task.id} 
-    sx={getListItemSx(task.status === TaskStatuses.Completed)}
+        key={task.id} 
+        sx={getListItemSx(task.status === TaskStatuses.Completed)}
     >
         <div>
             <Checkbox 
-            onChange={changeStatusHandler} 
-            checked={task.status === TaskStatuses.Completed} />
+                onChange={changeStatusHandler} 
+                checked={task.status === TaskStatuses.Completed}
+                disabled={task.entityStatus === 'loading'}
+            />
             <EditableSpan 
-            value={task.title} 
-            onChange={changeTaskTitleHandler}/>
+                value={task.title} 
+                onChange={changeTaskTitleHandler}
+                disabled={task.entityStatus === 'loading'}
+            />
         </div>
         <IconButton aria-label="delete" size="small" onClick={removeTaskHandler}>
             <DeleteIcon fontSize="inherit" />

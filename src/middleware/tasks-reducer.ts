@@ -1,17 +1,19 @@
 import { AddTodolistActionType, RemoveTodolistActionType, SetTodolistActionType} from "./todolist-reducer"
-import { TasksStateType } from "../App"
-import { TaskStatuses, TaskType, TodoTaskPriorities, UpdateTaskType, todolistsAPI } from "../api/todolists-api"
+import { DomainTaskType, TaskStatuses, TaskType, TasksStateType, TaskPriorities, UpdateTaskType, todolistsAPI, RequestStatusType } from "../api/todolists-api"
 import { AppDispatch, AppRootStateType, AppThunk } from "./store"
-import { setAppErrorAC, setAppStatusAC } from "./app-reducer"
+import { setAppStatusAC } from "./app-reducer"
+import { fetchTasksHandleServerError, handleServerError, handleServerNetworkError } from "../utils/error-utils"
+import {AxiosError} from "axios";
 
 //types:
 type UpdateTaskDomainModelType = {
     title?: string
     description?: string
     status?: TaskStatuses
-    priority?: TodoTaskPriorities
+    priority?: TaskPriorities
     startDate?: string
     deadline?: string
+    entityStatus?: RequestStatusType
 }
 
 type RemoveTasksActionType = ReturnType<typeof removeTaskAC>
@@ -19,7 +21,7 @@ type AddTasksActionType = ReturnType<typeof addTaskAC>
 type UpdateTaskActionType = ReturnType<typeof updateTaskAC>
 type SetTasksActionType = ReturnType<typeof setTaskAC>
 
-type ActionType = 
+type ActionType =
 | RemoveTasksActionType
 | AddTasksActionType
 | UpdateTaskActionType
@@ -43,7 +45,7 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
         }
         case 'ADD-TASKS': {
             const todoID = action.payload.task.todoListId
-            let newTask: TaskType = action.payload.task;
+            let newTask: DomainTaskType = {...action.payload.task, entityStatus: 'idle'};
             return {...state, [todoID]: [newTask, ...state[todoID]]}
         }
         case 'UPDATE-TASK': {
@@ -68,7 +70,7 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
         }
         case 'SET-TASKS': {
             const todoID = action.payload.todoID
-            return {...state, [todoID]: action.payload.tasks.map(t => ({...t, isDone: false}))}
+            return {...state, [todoID]: action.payload.tasks.map(t => ({...t, entityStatus: 'idle'}))}
         }
         default: {
             return state
@@ -91,69 +93,88 @@ export const fetchTasksTC = (todoID: string): AppThunk => async (dispatch: AppDi
     try {
         dispatch(setAppStatusAC('loading'))
         const res = await todolistsAPI.getTasks(todoID)
-        dispatch(setTaskAC(todoID, res.data.items))
-        dispatch(setAppStatusAC('succeeded'))
+        if (res.data.error === null) {
+            dispatch(setTaskAC(todoID, res.data.items))
+            dispatch(setAppStatusAC('succeeded'))
+        } else {
+            fetchTasksHandleServerError(res.data, dispatch)
+        }
+        
     } catch(error) {
-        console.log(error)
+        error instanceof AxiosError
+            ? handleServerNetworkError(error, dispatch)
+            : handleServerNetworkError({ message: 'Unknown error occurred' }, dispatch)
     }
 }
 export const removeTaskTC = (todoID: string, taskID: string): AppThunk => async (dispatch: AppDispatch) => {
     try {
+        dispatch(updateTaskAC(todoID, taskID, { entityStatus: 'loading' }))
         dispatch(setAppStatusAC('loading'))
-        await todolistsAPI.deleteTask(todoID, taskID)
-        dispatch(removeTaskAC(todoID, taskID))
-        dispatch(setAppStatusAC('succeeded'))
+        const res = await todolistsAPI.deleteTask(todoID, taskID)
+        if (res.data.resultCode === 0) {
+            dispatch(removeTaskAC(todoID, taskID))
+            dispatch(setAppStatusAC('succeeded'))
+        } else {
+            handleServerError(res.data, dispatch)
+        }
+        dispatch(updateTaskAC(todoID, taskID, { entityStatus: 'idle' }))
     } catch(error) {
-        console.log(error)
+        error instanceof AxiosError
+            ? handleServerNetworkError(error, dispatch)
+            : handleServerNetworkError({ message: 'Unknown error occurred' }, dispatch)
+        dispatch(updateTaskAC(todoID, taskID, { entityStatus: 'failed' }))
     }
 }
 export const addTaskTC = (todoID: string, title: string): AppThunk => async (dispatch: AppDispatch) => {
     try {
         dispatch(setAppStatusAC('loading'))
         const res = await todolistsAPI.createTask(todoID, title)
-        
         if (res.data.resultCode === 0) {
             dispatch(addTaskAC(res.data.data.item))
             dispatch(setAppStatusAC('succeeded'))
         } else {
-            res.data.messages.length 
-            ? dispatch(setAppErrorAC(res.data.messages[0]))
-            : dispatch(setAppErrorAC('Some error occured'))
-            dispatch(setAppStatusAC('failed'))
+            handleServerError(res.data, dispatch)
         }
     } catch(error) {
-        console.log(error)
+        error instanceof AxiosError
+            ? handleServerNetworkError(error, dispatch)
+            : handleServerNetworkError({ message: 'Unknown error occurred' }, dispatch)
     }
 }
-export const updateTaskTC = (todoID: string, taskID: string, domainModel: UpdateTaskDomainModelType) => async (dispatch: AppDispatch, getState: () => AppRootStateType) => {
+export const updateTaskTC = (todoID: string, taskID: string, domainModel: UpdateTaskDomainModelType): AppThunk => async (dispatch: AppDispatch, getState: () => AppRootStateType) => {
     try {
+        dispatch(updateTaskAC(todoID, taskID, { entityStatus: 'loading' }))
+        dispatch(setAppStatusAC('loading'))
         const state = getState();
         const tasks = state.tasks[todoID];
         const task = tasks.find(t => t.id === taskID);
 
         if (!task) {
-            console.warn('task not found in the state');
+            console.warn('Task not found in the state');
             return
         }
 
-            const updatedTask: UpdateTaskType = {
-                title: task.title,
-                startDate: task.startDate,
-                priority: task.priority,
-                description: task.description,
-                deadline: task.deadline,
-                status: task.status,
-                ...domainModel
-            }
-            const res = await todolistsAPI.updateTask(todoID, taskID, updatedTask)
-            if (res.data.resultCode === 0) {
-                dispatch(updateTaskAC(todoID, taskID, updatedTask))
-            } else {
-                dispatch(setAppErrorAC(res.data.messages[0]))
-            }
-            dispatch(setAppStatusAC('failed'))
+        const updatedTask: UpdateTaskType = {
+            title: task.title,
+            startDate: task.startDate,
+            priority: task.priority,
+            description: task.description,
+            deadline: task.deadline,
+            status: task.status,
+            ...domainModel
+        }
+        const res = await todolistsAPI.updateTask(todoID, taskID, updatedTask)
+        if (res.data.resultCode === 0) {
+            dispatch(updateTaskAC(todoID, taskID, updatedTask))
+            dispatch(setAppStatusAC('succeeded'))
+        } else {
+            handleServerError(res.data, dispatch)
+        }
+        dispatch(updateTaskAC(todoID, taskID, { entityStatus: 'idle' }))
     } catch(error) {
-        // dispatch(setAppErrorAC(error.message))
-        dispatch(setAppStatusAC('failed'))
+        error instanceof AxiosError
+            ? handleServerNetworkError(error, dispatch)
+            : handleServerNetworkError({ message: 'Unknown error occurred' }, dispatch)
+        dispatch(updateTaskAC(todoID, taskID, { entityStatus: 'failed' }))
     }
 }
