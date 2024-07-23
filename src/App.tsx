@@ -11,6 +11,7 @@ import { fetchTodolistsTC } from './middleware/todolist-reducer';
 import { useAppDispatch } from './hooks/hooks';
 import { ErrorSnackbar } from './components/ErrorSnackbar';
 import { TodolistList } from './components/todolist/TodolistList';
+import { Outlet } from 'react-router-dom';
 
 // types
 type ThemeMode = 'dark' | 'light'
@@ -53,7 +54,8 @@ function App( { demo = false }: AppPropsType) {
       <Header theme={theme} changeModeHandler={changeModeHandler} />
 
       <Container fixed sx={{ padding: '0' }}>
-        <TodolistList demo={demo} />
+        {/* <TodolistList demo={demo} /> */}
+        <Outlet />
       </Container>
     </ThemeProvider>
   );
