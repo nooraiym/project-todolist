@@ -65,6 +65,21 @@ export type DomainTaskType = TaskType & {
     entityStatus: RequestStatusType
 }
 export type TasksStateType = { [key: string]: Array<DomainTaskType> }
+
+export type LoginParamsType = {
+    email: string
+    password: string
+    rememberMe: boolean
+    captcha?: string
+}
+
+type UserType = {
+    id: number
+    email: string
+    login: string
+}
+
+
 //instance:
 const instance = axios.create({
     baseURL: 'https://social-network.samuraijs.com/api/1.1/',
@@ -73,6 +88,7 @@ const instance = axios.create({
         "API-KEY": "37c959d5-1aad-482b-a6de-5764ea80faf4"
     },
 })
+
 //API requests:
 export const todolistsAPI = {
     getTodolists() {
@@ -99,5 +115,17 @@ export const todolistsAPI = {
     },
     updateTask(todoID: string, taskID: string, model: UpdateTaskType) {
         return instance.put<ResponseType>(`todo-lists/${todoID}/tasks/${taskID}`, model)
+    }
+}
+
+export const authAPI = {
+    login (params: LoginParamsType) {
+        return instance.post<ResponseType<{ userId?: number }>>(`/auth/login`, params)
+    },
+    me () {
+        return instance.get<ResponseType<UserType>>('/auth/me')
+    },
+    logout () {
+        return instance.delete<ResponseType>('/auth/login')
     }
 }

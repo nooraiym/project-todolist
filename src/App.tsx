@@ -8,10 +8,13 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { fetchTodolistsTC } from './middleware/todolist-reducer';
-import { useAppDispatch } from './hooks/hooks';
+import { useAppDispatch, useAppSelector } from './hooks/hooks';
 import { ErrorSnackbar } from './components/ErrorSnackbar';
 import { TodolistList } from './components/todolist/TodolistList';
 import { Outlet } from 'react-router-dom';
+import { AppRootStateType } from './middleware/store';
+import CircularProgress from '@mui/material/CircularProgress';
+import { me } from './middleware/app-reducer';
 
 // types
 type ThemeMode = 'dark' | 'light'
@@ -19,10 +22,13 @@ type AppPropsType = { demo?: boolean }
 
 function App( { demo = false }: AppPropsType) {
   // data
+  const isInitialized = useAppSelector<AppRootStateType, boolean>(state => state.app.isInitialized)
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (demo) return
     dispatch(fetchTodolistsTC())
+    dispatch(me())
   }, [])
 
   // theme
@@ -45,6 +51,15 @@ function App( { demo = false }: AppPropsType) {
 
   // functions
   const changeModeHandler = useCallback(() => setThemeMode( themeMode === 'light' ? 'dark' : 'light'), [])
+
+  if(!isInitialized) {
+    return (
+      <div style={{ position: 'fixed', top: '50%', textAlign: 'center', width: '100%' }}>
+        <CircularProgress />
+      </div>
+      
+    )
+  }
 
 // ui
   return (

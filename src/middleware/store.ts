@@ -3,13 +3,15 @@ import { todolistReducer } from './todolist-reducer';
 import { tasksReducer } from './tasks-reducer';
 import { ThunkAction, ThunkDispatch, thunk } from 'redux-thunk';
 import { appReducer } from './app-reducer';
+import { authReducer } from './auth-reducer';
 
 //единственный объект-состояния:
 export type AppRootStateType = ReturnType<typeof rootReducer>
 const rootReducer = combineReducers({
     tasks: tasksReducer,
     todolists: todolistReducer,
-    app: appReducer
+    app: appReducer,
+    auth: authReducer
 })
 
 //store:

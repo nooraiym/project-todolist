@@ -5,7 +5,11 @@ import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
 import Switch from '@mui/material/Switch';
 import LinearProgress from '@mui/material/LinearProgress';
-import { useAppSelector } from '../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../hooks/hooks';
+import { AppRootStateType } from '../middleware/store';
+import { useCallback } from 'react';
+import { authAPI } from '../api/todolists-api';
+import { logout } from '../middleware/auth-reducer';
 
 type HeaderPropsType = {
   theme: any
@@ -13,7 +17,14 @@ type HeaderPropsType = {
 }
 
 export const Header = ( { theme, changeModeHandler } : HeaderPropsType ) => {
-  const status = useAppSelector(state => state.app.status)
+  const status = useAppSelector<AppRootStateType, string>(state => state.app.status)
+  const isLoggedIn = useAppSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+  const dispatch = useAppDispatch()
+
+  const handleLogout = useCallback(() => {
+    dispatch(logout())
+  }, [])
+
   return (
     <AppBar position="static" sx={{ mb: '30px' }}>
     <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -21,8 +32,7 @@ export const Header = ( { theme, changeModeHandler } : HeaderPropsType ) => {
         <MenuIcon />
       </IconButton>
       <div>
-        <MenuButton background={theme.palette.primary.dark} >Login</MenuButton>
-        <MenuButton background={theme.palette.primary.dark} >Logout</MenuButton>
+        {isLoggedIn && <MenuButton onClick={handleLogout}>Logout</MenuButton>}
         <MenuButton background='#3f89de' >Faq</MenuButton>
         <Switch color={'default'} onChange={changeModeHandler} />
       </div>

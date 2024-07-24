@@ -7,12 +7,14 @@ import { todolistReducer } from '../todolist-reducer';
 import { tasksReducer } from '../tasks-reducer';
 import { TaskStatuses, TaskPriorities } from '../../api/todolists-api';
 import { appReducer } from '../app-reducer';
+import { authReducer } from '../auth-reducer';
 
 
 const rootReducer = combineReducers({
     tasks: tasksReducer,
     todolists: todolistReducer,
-    app: appReducer
+    app: appReducer,
+    auth: authReducer
 })
 
 const initialGlobalState: AppRootStateType = {
@@ -32,7 +34,11 @@ tasks: {
     },
     app: {
         status: 'loading',
-        error: null
+        error: null,
+        isInitialized: false
+    },
+    auth: {
+        isLoggedIn: false
     }
 };
 
