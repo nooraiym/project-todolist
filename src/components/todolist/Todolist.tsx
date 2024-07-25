@@ -28,12 +28,12 @@ export const Todolist = React.memo(({ todolist, demo = false }: TodolistPropsTyp
   const dispatch = useAppDispatch();
   const tasks = useAppSelector<AppRootStateType, Array<DomainTaskType>>(state => state.tasks[todolist.id]);
 
-  useEffect(() => {
-    if (demo) {
-      return
-    }
-    dispatch(fetchTasksTC(todolist.id))
-  }, [])
+  // useEffect(() => {
+  //   if (demo) {
+  //     return
+  //   }
+  //   dispatch(fetchTasksTC(todolist.id))
+  // }, [])
 
   // functions for events
   const addTask = useCallback((title: string) => {
