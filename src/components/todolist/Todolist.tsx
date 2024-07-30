@@ -15,10 +15,8 @@ import Toolbar from '@mui/material/Toolbar'
 import { DomainTaskType, FilterValuesType, TaskStatuses, TodolistDomainType } from 'api/todolists-api'
 import { useAppDispatch, useAppSelector } from 'hooks/hooks'
 import { AppRootStateType } from 'middleware/store'
-import { addTaskTC } from 'middleware/tasks-reducer'
-import { changeTodolistFilterAC, changeTodolistTitleTC, removeTodolistTC } from 'middleware/todolist-reducer'
-
-
+import { addTaskTC } from 'middleware/tasksSlice'
+import { changeTodolistFilter, changeTodolistTitleTC, removeTodolistTC } from 'middleware/todolistSlice'
 
 type TodolistPropsType = {
   todolist: TodolistDomainType
@@ -54,7 +52,7 @@ export const Todolist = React.memo(({ todolist, demo = false }: TodolistPropsTyp
   )
   const functionForButton = useCallback(
     (todolistID: string, newFilter: FilterValuesType) => {
-      dispatch(changeTodolistFilterAC(todolistID, newFilter))
+      dispatch(changeTodolistFilter({ todoID: todolistID, filter: newFilter }))
     },
     [todolist.id]
   )

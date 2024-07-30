@@ -3,12 +3,13 @@ import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import { Todolist } from './Todolist'
 
-import { addTodolistTC, fetchTodolistsTC } from 'middleware/todolist-reducer'
+import { addTodolistTC, fetchTodolistsTC } from 'middleware/todolistSlice'
 import { AppRootStateType } from 'middleware/store'
 import { useAppDispatch, useAppSelector } from 'hooks/hooks'
 import { useCallback, useEffect } from 'react'
 import { TodolistDomainType } from 'api/todolists-api'
 import { Navigate } from 'react-router-dom'
+import { selectIsLoggedIn } from 'middleware/authSlice'
 
 type TodolistListPropsType = {
   demo?: boolean
@@ -16,7 +17,7 @@ type TodolistListPropsType = {
 
 export const TodolistList = ({ demo = false }: TodolistListPropsType) => {
   const todolists = useAppSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists)
-  const isLoggedIn = useAppSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+  const isLoggedIn = useAppSelector(selectIsLoggedIn)
   const dispatch = useAppDispatch()
 
   useEffect(() => {

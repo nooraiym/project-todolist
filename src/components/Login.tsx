@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import { useFormik } from 'formik'
 import { useAppDispatch, useAppSelector } from 'hooks/hooks'
-import { login } from 'middleware/auth-reducer'
+import { login, selectIsLoggedIn } from 'middleware/authSlice'
 import { Navigate } from 'react-router-dom'
 
 type FormikErrorType = {
@@ -19,7 +19,7 @@ type FormikErrorType = {
 
 const Login = () => {
   const dispatch = useAppDispatch()
-  const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
+  const isLoggedIn = useAppSelector(selectIsLoggedIn)
 
   const formik = useFormik({
     initialValues: {

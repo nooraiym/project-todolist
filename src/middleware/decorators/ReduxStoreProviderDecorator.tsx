@@ -3,11 +3,11 @@ import { AppRootStateType } from '../store'
 import { v1 } from 'uuid'
 import { applyMiddleware, combineReducers, legacy_createStore } from 'redux'
 import { thunk } from 'redux-thunk'
-import { todolistReducer } from '../todolist-reducer'
-import { tasksReducer } from '../tasks-reducer'
+import { todolistReducer } from '../todolistSlice'
+import { tasksReducer } from '../tasksSlice'
 import { TaskStatuses, TaskPriorities } from 'api/todolists-api'
-import { appReducer } from '../app-reducer'
-import { authReducer } from '../auth-reducer'
+import { appReducer } from '../appSlice'
+import { authReducer } from '../authSlice'
 
 const rootReducer = combineReducers({
   tasks: tasksReducer,

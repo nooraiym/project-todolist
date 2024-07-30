@@ -6,18 +6,17 @@ import MenuIcon from '@mui/icons-material/Menu'
 import Switch from '@mui/material/Switch'
 import LinearProgress from '@mui/material/LinearProgress'
 import { useAppDispatch, useAppSelector } from 'hooks/hooks'
-import { AppRootStateType } from 'middleware/store'
 import { useCallback } from 'react'
-import { logout } from 'middleware/auth-reducer'
+import { logout, selectIsLoggedIn } from 'middleware/authSlice'
+import { selectStatus } from 'middleware/appSlice'
 
 type HeaderPropsType = {
-  theme: any
   changeModeHandler: () => void
 }
 
-export const Header = ({ theme, changeModeHandler }: HeaderPropsType) => {
-  const status = useAppSelector<AppRootStateType, string>(state => state.app.status)
-  const isLoggedIn = useAppSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+export const Header = ({ changeModeHandler }: HeaderPropsType) => {
+  const status = useAppSelector(selectStatus)
+  const isLoggedIn = useAppSelector(selectIsLoggedIn)
   const dispatch = useAppDispatch()
 
   const handleLogout = useCallback(() => {

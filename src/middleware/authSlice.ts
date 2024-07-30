@@ -1,39 +1,39 @@
 import { AxiosError } from 'axios'
 import { AppDispatch, AppThunk } from './store'
 import { handleServerError, handleServerNetworkError } from 'utils/error-utils'
-import { setAppStatusAC } from './app-reducer'
+import { setAppStatus } from './appSlice'
 import { LoginParamsType, authAPI } from 'api/todolists-api'
-import { clearTodolistAC } from './todolist-reducer'
+import { clearTodolist } from './todolistSlice'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-type InitialStateType = typeof initialState
-export type AuthActionsType = ReturnType<typeof setIsLoggedIn>
-
-const initialState = {
-  isLoggedIn: false,
-}
-
-export const authReducer = (state: InitialStateType = initialState, action: AuthActionsType): InitialStateType => {
-  switch (action.type) {
-    case 'login/SET-IS-LOGGED-IN':
-      return { ...state, isLoggedIn: action.isLoggedIn }
-    default:
-      return state
+const slice = createSlice({
+  name: 'auth',
+  initialState: {
+    isLoggedIn: false,
+  },
+  reducers: {
+    setIsLoggedIn: (state, action: PayloadAction<{ isLoggedIn: boolean }>) => {
+      state.isLoggedIn = action.payload.isLoggedIn
+    },
+  },
+  selectors: {
+    selectIsLoggedIn: sliceState => sliceState.isLoggedIn
   }
-}
+})
 
-export const setIsLoggedIn = (isLoggedIn: boolean) => {
-  return { type: 'login/SET-IS-LOGGED-IN', isLoggedIn }
-}
+export const authReducer = slice.reducer
+export const { setIsLoggedIn } = slice.actions
+export const { selectIsLoggedIn } = slice.selectors
 
 export const login =
   (params: LoginParamsType): AppThunk =>
   async (dispatch: AppDispatch) => {
     try {
-      dispatch(setAppStatusAC('loading'))
+      dispatch(setAppStatus({ status: 'loading' }))
       const res = await authAPI.login(params)
       if (res.data.resultCode === 0) {
-        dispatch(setIsLoggedIn(true))
-        dispatch(setAppStatusAC('succeeded'))
+        dispatch(setIsLoggedIn({ isLoggedIn: true }))
+        dispatch(setAppStatus({ status: 'succeeded' }))
       } else {
         handleServerError(res.data, dispatch)
       }
@@ -46,12 +46,12 @@ export const login =
 
 export const logout = (): AppThunk => async (dispatch: AppDispatch) => {
   try {
-    dispatch(setAppStatusAC('loading'))
+    dispatch(setAppStatus({ status: 'loading' }))
     const res = await authAPI.logout()
     if (res.data.resultCode === 0) {
-      dispatch(setIsLoggedIn(false))
-      dispatch(setAppStatusAC('succeeded'))
-      dispatch(clearTodolistAC())
+      dispatch(setIsLoggedIn({ isLoggedIn: false }))
+      dispatch(setAppStatus({ status: 'succeeded' }))
+      dispatch(clearTodolist({}))
     } else {
       handleServerError(res.data, dispatch)
     }

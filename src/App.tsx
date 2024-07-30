@@ -9,11 +9,10 @@ import Container from '@mui/material/Container'
 import CssBaseline from '@mui/material/CssBaseline'
 import CircularProgress from '@mui/material/CircularProgress'
 
-import { fetchTodolistsTC } from 'middleware/todolist-reducer'
+import { fetchTodolistsTC } from 'middleware/todolistSlice'
 import { useAppDispatch, useAppSelector } from 'hooks/hooks'
 import { Outlet } from 'react-router-dom'
-import { AppRootStateType } from 'middleware/store'
-import { me } from 'middleware/app-reducer'
+import { selectIsInitialized, me } from 'middleware/appSlice'
 
 // types
 type ThemeMode = 'dark' | 'light'
@@ -21,7 +20,7 @@ type AppPropsType = { demo?: boolean }
 
 function App({ demo = false }: AppPropsType) {
   // data
-  const isInitialized = useAppSelector<AppRootStateType, boolean>(state => state.app.isInitialized)
+  const isInitialized = useAppSelector(selectIsInitialized)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -71,7 +70,7 @@ function App({ demo = false }: AppPropsType) {
     <ThemeProvider theme={theme}>
       <ErrorSnackbar />
       <CssBaseline />
-      <Header theme={theme} changeModeHandler={changeModeHandler} />
+      <Header changeModeHandler={changeModeHandler} />
 
       <Container fixed sx={{ padding: '0' }}>
         {/* <TodolistList demo={demo} /> */}

@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton'
 import Checkbox from '@mui/material/Checkbox'
 import DeleteIcon from '@mui/icons-material/Delete'
 
-import { removeTaskTC, updateTaskTC } from 'middleware/tasks-reducer'
+import { removeTaskTC, updateTaskTC } from 'middleware/tasksSlice'
 import { useAppDispatch } from 'hooks/hooks'
 import { DomainTaskType, TaskStatuses } from 'api/todolists-api'
 import { getListItemSx } from './todolist/Todolist.styles'
