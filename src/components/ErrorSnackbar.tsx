@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
-import { useAppDispatch, useAppSelector } from '../hooks/hooks'
-import { setAppErrorAC } from '../middleware/app-reducer'
+import { useAppDispatch, useAppSelector } from 'hooks/hooks'
+import { setAppErrorAC } from 'middleware/app-reducer'
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
@@ -26,7 +26,7 @@ export function ErrorSnackbar() {
   return (
     <Snackbar open={isOpen} autoHideDuration={3000} onClose={handleClose}>
       <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-        { error }
+        {error}
       </Alert>
     </Snackbar>
   )

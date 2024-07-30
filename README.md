@@ -1,4 +1,3 @@
-
 # TodoList - Trello-like Task Management App
 
 ## About The Project
@@ -19,6 +18,7 @@ TodoList is a web-based project management tool that helps teams organize, track
 - **Deployment**: This application is hosted on GitHub Pages.
 
 ## Getting Started
+
 ### Installation
 
 1. **Clone the repository**
